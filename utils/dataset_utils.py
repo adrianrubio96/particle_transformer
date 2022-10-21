@@ -113,10 +113,14 @@ def validate_file(fpath, file_hash, algorithm='md5', chunk_size=131071):
     # Returns
         Whether the file is valid
     """
+    print('Algorithm '+algorithm)
     if ((algorithm == 'sha256') or (algorithm == 'auto' and len(file_hash) == 64)):
         hasher = 'sha256'
     else:
         hasher = 'md5'
+
+    print('_hash_file --> '+str(_hash_file(fpath, hasher, chunk_size)))
+    print('file_hash --> '+str(file_hash))
 
     return str(_hash_file(fpath, hasher, chunk_size)) == str(file_hash)
 
@@ -181,6 +185,8 @@ def get_file(origin=None,
         # File found; verify integrity if a hash was provided.
         print(f'A local file already found at {fpath}, checking hash...')
         if file_hash is not None:
+            print('Firs validate_file:')
+            print(validate_file(fpath, file_hash, algorithm=hash_algorithm))
             if validate_file(fpath, file_hash, algorithm=hash_algorithm):
                 print('Local file hash matches, no need to download.')
             else:
@@ -199,6 +205,7 @@ def get_file(origin=None,
         error_msg = 'URL fetch failure on {}: {}'
         try:
             try:
+                print('Downloading...')
                 _download(origin, fpath)
             except requests.exceptions.RequestException as e:
                 raise Exception(error_msg.format(origin, e.msg))
@@ -208,6 +215,8 @@ def get_file(origin=None,
             raise
 
         if file_hash is not None:
+            print('Second validate_file:')
+            print(validate_file(fpath, file_hash, algorithm=hash_algorithm))
             if not validate_file(fpath, file_hash, algorithm=hash_algorithm):
                 if os.path.exists(fpath):
                     os.remove(fpath)
