@@ -1,0 +1,73 @@
+selection:
+   ### use `&`, `|`, `~` for logical operations on numpy arrays
+   ### can use functions from `math`, `np` (numpy), and `awkward` in the expression
+
+new_variables:
+   ### [format] name: formula
+   ### can use functions from `math`, `np` (numpy), and `awkward` in the expression
+   obj_mask: ak.ones_like(obj_Energy)
+   obj_pt: np.hypot(obj_px, obj_py)
+   obj_logpt: np.log(obj_pt)
+   obj_logpx: np.log(np.absolute(obj_px))
+   obj_logpy: np.log(np.absolute(obj_py))
+   #obj_logpz: np.log(np.absolute(obj_pz))
+   obj_logEnergy: np.log(obj_Energy)
+   #obj_deta: ak.ones_like(obj_Energy)
+   #obj_dphi: ak.ones_like(obj_Energy)
+
+preprocess:
+  ### method: [manual, auto] - whether to use manually specified parameters for variable standardization
+  method: manual
+  ### data_fraction: fraction of events to use when calculating the mean/scale for the standardization
+  data_fraction: 0.5
+
+inputs:
+   pf_points:
+      length: 20
+      pad_mode: wrap
+      vars: 
+         - [obj_eta, null]
+         - [obj_phi, null]
+
+   pf_features:
+      length: 20
+      pad_mode: wrap
+      vars:
+         - [obj_logpt, null]
+         #- [obj_logpx, null]
+         #- [obj_logpy, null]
+         #- [obj_logpz, null]
+         - [obj_logEnergy, null]
+         #- [obj_deta, null]
+         #- [obj_dphi, null]
+
+   pf_vectors:
+      length: 20
+      pad_mode: wrap
+      vars: 
+         - [isJet, null]
+         - [isBJet, null]
+         - [isLepton, null]
+         - [isPhoton, null]
+
+   pf_mask:
+      length: 20
+      pad_mode: constant
+      vars: 
+         - [obj_mask, null]
+
+labels:
+   ### type can be `simple`, `custom`
+   ### [option 1] use `simple` for binary/multi-class classification, then `value` is a list of 0-1 labels
+   type: simple
+   value: [label_ttbar, label_Zjets, label_wtop]
+   ### [option 2] otherwise use `custom` to define the label, then `value` is a map
+   # type: custom
+   # value: 
+   #    truth_label: label.argmax(1)
+
+observers:
+   - HT
+   - MET
+
+weights:
