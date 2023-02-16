@@ -11,8 +11,9 @@ new_variables:
    obj_logpx: np.log(np.absolute(obj_px))
    obj_logpy: np.log(np.absolute(obj_py))
    obj_logEnergy: np.log(obj_Energy)
-   # replace 0 values by 1e-8 in array "isMET"
+   # Set to zero the possible nan values in pz for MET
    obj_pz_fixed:  np.nan_to_num(obj_pz)
+   # replace 0 values by 1e-8 in array "isMET"
    isMET_fixed: np.where(isMET==0., 1e-8, isMET) 
    #obj_logpz: np.log(np.absolute(obj_pz))
    #obj_deta: ak.ones_like(obj_Energy)
