@@ -104,7 +104,7 @@ $CMD \
 
 # Create script to run prediction on test set
 
-echo "$CMD \
+echo "gpurun $CMD \
     --predict --data-test \
     "background:${DATADIR}/test/background_*.root" \
     "signal:${DATADIR}/test/signal_*.root" \
