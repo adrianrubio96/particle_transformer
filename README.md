@@ -1,91 +1,17 @@
-# Particle Transformer
+# Event classification using Transformers
+This repository is forked from the "[official code developed for jet-tagging](https://github.com/jet-universe/particle_transformer)" using the so called "[Particle Transformer](https://arxiv.org/abs/2202.03772)".
 
-This repo is the official implementation of "[Particle Transformer for Jet Tagging](https://arxiv.org/abs/2202.03772)". It includes the code, pre-trained models, and the JetClass dataset.
+Here, an adaptation for event classification is intended. Instead of classifying jets by extracting information from their constituents, the idea now is to classify proton-proton collisions simulated in the ATLAS detector by using the properties of their reconstructed objects (jets, leptons, missing energy transverse, etc.)
 
-![jet-tagging](figures/jet-tagging.png)
+Since the framework also integrates other architectures (ParticleNet, PFN, P-CNN), different results and comparisons can be obtained directly using the same dataset as input. Since these architectures are quite optimal already, most of the changes come from the adaptation of the dataset that is given to the framework, since a particular format is required.
 
-## Introduction
+## Dataset
+As a first approach, the "[DarkMachines dataset](https://arxiv.org/abs/2105.14027)" is used, which is available in csv format.
+The procedure followed to convert this csv files into ROOT ntuples with the appropriate format is described in "[this repository](https://github.com/adrianrubio96/DarkMachines)".
 
-### JetClass dataset
+## Plotting
+Both the input variables and the metrics defined from the results are plotted using the "DarkMachines" branch of "[this repository](https://github.com/adrianrubio96/ROOTplotting/tree/DarkMachines)". Despite the instructions can be found there, the `DarkMachines` script already provides the needed shell scripts to plot the metrics: roc curve, confusion matrix, Loss and Accuracy functions, and scores distributions.
 
-**[JetClass](https://zenodo.org/record/6619768)** is a new large-scale jet tagging dataset proposed in "[Particle Transformer for Jet Tagging](https://arxiv.org/abs/2202.03772)". It consists of 100M jets for training, 5M for validation and 20M for testing. The dataset contains 10 classes of jets, simulated with [MadGraph](https://launchpad.net/mg5amcnlo) + [Pythia](https://pythia.org/) + [Delphes](https://cp3.irmp.ucl.ac.be/projects/delphes):
-
-![dataset](figures/dataset.png)
-
-### Particle Transformer (ParT)
-
-The **Particle Transformer (ParT)** architecture is described in "[Particle Transformer for Jet Tagging](https://arxiv.org/abs/2202.03772)", which can serve as a general-purpose backbone for jet tagging and similar tasks in particle physics. It is a Transformer-based architecture, enhanced with pairwise particle interaction features that are incorporated in the multi-head attention as a bias before softmax. The ParT architecture outperforms the previous state-of-the-art, ParticleNet, by a large margin on various jet tagging benchmarks.
-
-![arch](figures/arch.png)
-
-## Getting started
-
-### Download the datasets
-
-To download the JetClass/QuarkGluon/TopLandscape datasets:
-
-```
-./get_datasets.py [JetClass|QuarkGluon|TopLandscape] [-d DATA_DIR]
-```
-
-After download, the dataset paths will be updated in the `env.sh` file.
-
-### Training
-
-The ParT models are implemented in PyTorch and the training is based on the [weaver](https://github.com/hqucms/weaver-core) framework for dataset loading and transformation. To install `weaver`, run:
-
-```python
-pip install weaver-core
-```
-
-**To run the training on the JetClass dataset:**
-
-```
-./train_JetClass.sh [ParT|PN|PFN|PCNN] [kin|kinpid|full] ...
-```
-
-where the first argument is the model:
-
-- ParT: [Particle Transformer](https://arxiv.org/abs/2202.03772)
-- PN: [ParticleNet](https://arxiv.org/abs/1902.08570)
-- PFN: [Particle Flow Network](https://arxiv.org/abs/1810.05165)
-- PCNN: [P-CNN](https://arxiv.org/abs/1902.09914)
-
-and the second argument is the input feature sets:
-
-- [kin](data/JetClass/JetClass_kin.yaml): only kinematic inputs
-- [kinpid](data/JetClass/JetClass_kinpid.yaml): kinematic inputs + particle identification
-- [full](data/JetClass/JetClass_full.yaml) (_default_): kinematic inputs + particle identification + trajectory displacement
-
-Additional arguments will be passed directly to the `weaver` command, such as `--batch-size`, `--start-lr`, `--gpus`, etc., and will override existing arguments in `train_JetClass.sh`.
-
-**Multi-gpu support:**
-
-- using PyTorch's DataParallel multi-gpu training:
-
-```
-./train_JetClass.sh ParT full --gpus 0,1,2,3 --batch-size [total_batch_size] ...
-```
-
-- using PyTorch's DistributedDataParallel:
-
-```
-DDP_NGPUS=4 ./train_JetClass.sh ParT full --batch-size [batch_size_per_gpu] ...
-```
-
-**To run the training on the QuarkGluon dataset:**
-
-```
-./train_QuarkGluon.sh [ParT|ParT-FineTune|PN|PN-FineTune|PFN|PCNN] [kin|kinpid|kinpidplus] ...
-```
-
-**To run the training on the TopLandscape dataset:**
-
-```
-./train_TopLandscape.sh [ParT|ParT-FineTune|PN|PN-FineTune|PFN|PCNN] [kin] ...
-```
-
-The argument `ParT-FineTune` or `PN-FineTune` will run the fine-tuning using [models pre-trained on the JetClass dataset](models/).
 
 ## Citations
 
