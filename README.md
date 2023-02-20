@@ -10,7 +10,7 @@ As a first approach, the "[DarkMachines dataset](https://arxiv.org/abs/2105.1402
 The procedure followed to convert this csv files into ROOT ntuples with the appropriate format is described in "[DarMachines repository](https://github.com/adrianrubio96/DarkMachines)".
 
 ## Plotting
-Both the input variables and the metrics defined from the results are plotted using the "DarkMachines" branch of "[ROOTplotting repository](https://github.com/adrianrubio96/ROOTplotting/tree/DarkMachines)". Despite the instructions can be found there, the `DarkMachines` script already provides the needed shell scripts to plot the metrics: roc curve, confusion matrix, Loss and Accuracy functions, and scores distributions.
+Both the input variables and the metrics defined from the results are plotted using the "DarkMachines" branch of "[ROOTplotting repository](https://github.com/adrianrubio96/ROOTplotting/tree/DarkMachines)". Despite the instructions can be found there, the `train_DarkMachines.sh` script already provides the needed shell scripts to plot the metrics: roc curve, confusion matrix, Loss and Accuracy functions, and scores distributions.
 
 
 ## Citations
